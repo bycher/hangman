@@ -2,48 +2,42 @@ namespace Hangman
 {
     public class Game
     {
-        public const int MaxErrors = 6;
+        private const int MaxErrorsCount = 6;
 
-        public int ErrorsCount { get; set; }
-        public string SecretWord { get; set; } = null!;
-        public List<char> GuessedLetters { get; set; } = [];
+        public bool IsGameWon => _secretWord.All(_guessedLetters.Contains);
+        public bool IsGameLost => _errorsCount == MaxErrorsCount;
+
+        private readonly List<char> _guessedLetters;
+        private int _errorsCount;
+        private readonly string _secretWord;
 
         public Game()
         {
-            SecretWord = "SECRET";
+            _errorsCount = 0;
+            _secretWord = "SECRET";
+            _guessedLetters = [];
         }
 
-        public bool IsWordGuessed()
+        public void CheckPlayersAttemp(char letter)
         {
-            return GuessedLetters.Count == SecretWord.Length;
-        }
-
-        public bool IsMaxErrorCountReached()
-        {
-            return ErrorsCount == MaxErrors;
-        }
-
-        public void CheckLetter(char letter)
-        {
-            Console.Write("Слово: ");
-            if (SecretWord.Contains(letter))
-            {
-                GuessedLetters.AddRange(Enumerable.Repeat(letter, SecretWord.Count(c => c == letter)));
-                foreach (var c in SecretWord)
-                {
-                    if (GuessedLetters.Contains(c))
-                        Console.Write(c);
-                    else
-                        Console.Write("*");
-                }
-            }
+            if (_secretWord.Contains(letter))
+                _guessedLetters.Add(letter);
             else
-            {
-                ErrorsCount++;
-            }
-            Console.WriteLine();
-            Console.WriteLine($"Число ошибок: {ErrorsCount}/{MaxErrors}");
+                _errorsCount++;
         }
 
+        public void PrintRoundInfo()
+        {
+            var guessedWord = new string(
+                _secretWord.Select(c => _guessedLetters.Contains(c) ? c : '*').ToArray());
+
+            Console.WriteLine($"Word: {guessedWord}");
+            Console.WriteLine($"Errors count: {_errorsCount}/{MaxErrorsCount}");
+
+            if (IsGameLost)
+                Console.WriteLine("You lost!");
+            if (IsGameWon)
+                Console.WriteLine("You won!");
+        }
     }
 }

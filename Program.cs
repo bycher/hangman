@@ -2,61 +2,58 @@
 
 internal class Program
 {
-    private static bool ValidateInput(string? input)
+    private static bool ValidateInput(string input)
     {
-        if (input == null)
-            return false;
-
         if (input.Length != 1)
+        {
+            Console.WriteLine("You can enter only one letter.");
             return false;
+        }
+        if (!char.IsAsciiLetter(input[0]))
+        {
+            Console.WriteLine("Please enter the letter.");
+            return false;
+        }
+        return true;
+    }
 
-        return char.IsAsciiLetter(input[0]);
+    private static char ProcessInput()
+    {
+        string? input;
+        do
+        {
+            Console.Write("Enter the letter: ");
+            input = Console.ReadLine()!;
+        }
+        while (!ValidateInput(input));
+        
+        return input.First();
     }
 
     private static void Main(string[] args)
     {
-        do
+        while (true)
         {
-            Console.WriteLine("Хотите начать новую игру [y/n]?");
+            Console.WriteLine("Do you want to start a new game? [y/n]: ");
             var key = Console.ReadKey(true);
-            if (key.KeyChar == 'y')
-            {
-                var game = new Game();
-                while (true)
-                {
-                    string? input;
-                    do
-                    {
-                        Console.WriteLine("Введите букву:");
-                        input = Console.ReadLine();
-                    }
-                    while (!ValidateInput(input));
-                    
-                    var letter = input!.First();
-                    game.CheckLetter(letter);
 
-                    if (game.IsMaxErrorCountReached())
-                    {
-                        Console.WriteLine("Вы проиграли");
-                        break;
-                    }
-
-                    if (game.IsWordGuessed())
-                    {
-                        Console.WriteLine("Вы победили");
-                        break;
-                    }
-                }
-            }
-            else if (key.KeyChar == 'n')
+            switch (key.KeyChar)
             {
-                return;
-            }
-            else
-            {
-                Console.WriteLine("Введите 'y', чтобы начать новую игру, или 'n', чтобы выйти из приложения.");
+                case 'y':
+                    var game = new Game();
+                    while (!game.IsGameLost && !game.IsGameWon)
+                    {
+                        var letter = ProcessInput();
+                        game.CheckPlayersAttemp(letter);
+                        game.PrintRoundInfo();
+                    }
+                    break;
+                case 'n':
+                    return;
+                default:
+                    Console.WriteLine("Invalid key was pressed, please try again.");
+                    break;
             }
         }
-        while (true);
     }
 }
