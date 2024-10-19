@@ -7,15 +7,17 @@ namespace Hangman
         public bool IsGameWon => _secretWord.All(_guessedLetters.Contains);
         public bool IsGameLost => _errorsCount == MaxErrorsCount;
 
+        private readonly SecretWordGenerator _secretWordGenerator;
         private readonly List<char> _guessedLetters;
         private int _errorsCount;
         private readonly string _secretWord;
 
-        public Game()
+        public Game(SecretWordGenerator secretWordGenerator)
         {
-            _errorsCount = 0;
-            _secretWord = "SECRET";
+            _secretWordGenerator = secretWordGenerator;
+            _secretWord = _secretWordGenerator.GetRandomWord();
             _guessedLetters = [];
+            _errorsCount = 0;
         }
 
         public void CheckPlayersAttemp(char letter)

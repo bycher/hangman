@@ -9,7 +9,7 @@ internal class Program
             Console.WriteLine("You can enter only one letter.");
             return false;
         }
-        if (!char.IsAsciiLetter(input[0]))
+        if (!char.IsLetter(input[0]))
         {
             Console.WriteLine("Please enter the letter.");
             return false;
@@ -40,7 +40,8 @@ internal class Program
             switch (key.KeyChar)
             {
                 case 'y':
-                    var game = new Game();
+                    var generator = new SecretWordGenerator();
+                    var game = new Game(generator);
                     while (!game.IsGameLost && !game.IsGameWon)
                     {
                         var letter = ProcessInput();
