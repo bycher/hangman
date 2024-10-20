@@ -5,18 +5,20 @@ namespace Hangman
         private const int MinWordLength = 5;
         private const string SourceFile = "words.txt";
 
-        private readonly string[] _words;
+        private readonly List<string> _words;
 
         public SecretWordGenerator()
         {
             var allWords = File.ReadAllLines(SourceFile);
-            _words = allWords.Where(w => w.Length >= MinWordLength).ToArray();
+            _words = allWords.Where(w => w.Length >= MinWordLength).ToList();
         }
 
-        public string GetRandomWord()
+        public SecretWord GetRandomWord()
         {
             var random = new Random();
-            return _words[random.Next(_words.Length)];
+            var word = _words[random.Next(_words.Count)];
+
+            return new SecretWord(word);
         }
     }
 }

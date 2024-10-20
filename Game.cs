@@ -2,44 +2,64 @@ namespace Hangman
 {
     public class Game
     {
-        private const int MaxErrorsCount = 6;
-
-        public bool IsGameWon => _secretWord.All(_guessedLetters.Contains);
-        public bool IsGameLost => _errorsCount == MaxErrorsCount;
-
-        private readonly SecretWordGenerator _secretWordGenerator;
-        private readonly List<char> _guessedLetters;
+        private readonly int _maxErrorsCount;
         private int _errorsCount;
-        private readonly string _secretWord;
+        private readonly List<char> _usedLetters = [];
+        private readonly SecretWord _secretWord;
 
-        public Game(SecretWordGenerator secretWordGenerator)
+        public Game(int maxErrorsCount)
         {
-            _secretWordGenerator = secretWordGenerator;
-            _secretWord = _secretWordGenerator.GetRandomWord();
-            _guessedLetters = [];
-            _errorsCount = 0;
+            _maxErrorsCount = maxErrorsCount;
+
+            var secretWordGenerator = new SecretWordGenerator();
+            _secretWord = secretWordGenerator.GetRandomWord();
         }
 
-        public void CheckPlayersAttemp(char letter)
+        public void Start()
         {
+            while (!_secretWord.IsGuessed() && _errorsCount < _maxErrorsCount)
+            {
+                PrintRoundInfo();
+                char letter;
+                do
+                    letter = Player.GuessLetter();
+                while (!ProcessGuess(letter));
+            }
+
+            PrintFinalMessage();
+        }
+
+        private bool ProcessGuess(char letter)
+        {
+            if (_usedLetters.Contains(letter))
+            {
+                Console.WriteLine($"Letter '{letter}' has already been used. Try another letter.");
+                return false;
+            }
+
             if (_secretWord.Contains(letter))
-                _guessedLetters.Add(letter);
+                _secretWord.Reveal(letter);
             else
                 _errorsCount++;
+
+            _usedLetters.Add(letter);
+            return true;
         }
 
-        public void PrintRoundInfo()
+        private void PrintRoundInfo()
         {
-            var guessedWord = new string(
-                _secretWord.Select(c => _guessedLetters.Contains(c) ? c : '*').ToArray());
+            Console.WriteLine("Word: " + _secretWord.Mask);
+            Console.WriteLine($"Errors count: {_errorsCount}/{_maxErrorsCount}");
+        }
 
-            Console.WriteLine($"Word: {guessedWord}");
-            Console.WriteLine($"Errors count: {_errorsCount}/{MaxErrorsCount}");
+        private void PrintFinalMessage()
+        {
+            if (_secretWord.IsGuessed())
+                Console.Write("Congratulations! You guessed the word: ");
+            else
+                Console.Write("Unfortunately you have lost! The secret word: ");
 
-            if (IsGameLost)
-                Console.WriteLine("You lost!");
-            if (IsGameWon)
-                Console.WriteLine("You won!");
+            Console.WriteLine(_secretWord.Word);
         }
     }
 }

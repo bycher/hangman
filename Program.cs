@@ -1,59 +1,22 @@
-﻿using Hangman;
-
-internal class Program
+﻿namespace Hangman
 {
-    private static bool ValidateInput(string input)
+    internal class Program
     {
-        if (input.Length != 1)
+        private static void Main(string[] args)
         {
-            Console.WriteLine("You can enter only one letter.");
-            return false;
-        }
-        if (!char.IsLetter(input[0]))
-        {
-            Console.WriteLine("Please enter the letter.");
-            return false;
-        }
-        return true;
-    }
-
-    private static char ProcessInput()
-    {
-        string? input;
-        do
-        {
-            Console.Write("Enter the letter: ");
-            input = Console.ReadLine()!;
-        }
-        while (!ValidateInput(input));
-        
-        return input.First();
-    }
-
-    private static void Main(string[] args)
-    {
-        while (true)
-        {
-            Console.WriteLine("Do you want to start a new game? [y/n]: ");
-            var key = Console.ReadKey(true);
-
-            switch (key.KeyChar)
+            while (true)
             {
-                case 'y':
-                    var generator = new SecretWordGenerator();
-                    var game = new Game(generator);
-                    while (!game.IsGameLost && !game.IsGameWon)
-                    {
-                        var letter = ProcessInput();
-                        game.CheckPlayersAttemp(letter);
-                        game.PrintRoundInfo();
-                    }
+                var option = Player.ChooseStartOption();
+
+                if (option == 'y')
+                {
+                    var game = new Game(6);
+                    game.Start();
+                }
+                else if (option == 'n')
                     break;
-                case 'n':
-                    return;
-                default:
-                    Console.WriteLine("Invalid key was pressed, please try again.");
-                    break;
+                else
+                    Console.WriteLine("Invalid key was pressed. Please try again.");
             }
         }
     }
