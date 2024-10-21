@@ -2,7 +2,7 @@ namespace Hangman
 {
     public static class Player
     {
-        private static bool IsValidInput(string input)
+        private static bool ValidateInput(string input)
         {
             if (input.Length != 1)
             {
@@ -32,7 +32,7 @@ namespace Hangman
                 Console.Write("Enter the letter: ");
                 input = Console.ReadLine()!;
             }
-            while (!IsValidInput(input));
+            while (!ValidateInput(input));
 
             return input[0];
         }

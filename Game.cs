@@ -3,29 +3,30 @@ namespace Hangman
     public class Game
     {
         private int _remainingAttempts;
-        private readonly List<char> _usedLetters = [];
+        private readonly HashSet<char> _usedLetters;
         private readonly SecretWord _secretWord;
 
         public Game(GameSettings settings)
         {
+            _usedLetters = [];
+            _remainingAttempts = settings.TotalAttempts;
+
             var secretWordGenerator = new SecretWordGenerator(settings);
             _secretWord = secretWordGenerator.GetRandomWord();
-
-            _remainingAttempts = settings.TotalAttempts;
         }
 
         public void Start()
         {
             while (!_secretWord.IsGuessed() && _remainingAttempts > 0)
             {
-                PrintRoundInfo();
+                Logger.LogRoundInfo(_secretWord, _remainingAttempts);
                 char letter;
                 do
                     letter = Player.GuessLetter();
                 while (!ProcessGuess(letter));
             }
 
-            PrintFinalMessage();
+            Logger.LogGameResult(_secretWord);
         }
 
         private bool ProcessGuess(char letter)
@@ -43,22 +44,6 @@ namespace Hangman
 
             _usedLetters.Add(letter);
             return true;
-        }
-
-        private void PrintRoundInfo()
-        {
-            Console.WriteLine("Word: " + _secretWord.Mask);
-            Console.WriteLine($"Attempts left: {_remainingAttempts}");
-        }
-
-        private void PrintFinalMessage()
-        {
-            if (_secretWord.IsGuessed())
-                Console.Write("Congratulations! You guessed the word: ");
-            else
-                Console.Write("Unfortunately you have lost! The secret word: ");
-
-            Console.WriteLine(_secretWord.Word);
         }
     }
 }

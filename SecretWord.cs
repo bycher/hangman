@@ -4,7 +4,7 @@ namespace Hangman
 {
     public class SecretWord
     {
-        private const char UnknownLetterPlaceholder = '*';
+        private const char UnknownLetterPlaceholder = '_';
 
         private readonly List<char> _mask;
         private readonly string _word;
