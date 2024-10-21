@@ -19,7 +19,7 @@ namespace Hangman
         {
             while (!_secretWord.IsGuessed() && _remainingAttempts > 0)
             {
-                Logger.LogRoundInfo(_secretWord, _remainingAttempts);
+                Logger.LogRoundInfo(_secretWord, _remainingAttempts, _usedLetters);
                 char letter;
                 do
                     letter = Player.GuessLetter();
