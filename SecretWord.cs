@@ -1,15 +1,22 @@
+#pragma warning disable IDE0290
+
 namespace Hangman
 {
-    public class SecretWord(string word)
+    public class SecretWord
     {
         private const char UnknownLetterPlaceholder = '*';
 
-        private readonly List<char> _mask =
-            Enumerable.Repeat(UnknownLetterPlaceholder, word.Length).ToList();
-        private readonly string _word = word;
+        private readonly List<char> _mask;
+        private readonly string _word;
 
         public string Word => _word;
         public string Mask => new([.. _mask]);
+
+        public SecretWord(string word)
+        {
+            _word = word;
+            _mask = Enumerable.Repeat(UnknownLetterPlaceholder, word.Length).ToList();
+        }
 
         public bool IsGuessed() => _mask.SequenceEqual(_word);
 

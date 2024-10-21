@@ -6,12 +6,12 @@ namespace Hangman
         private readonly List<char> _usedLetters = [];
         private readonly SecretWord _secretWord;
 
-        public Game(GameSettings gameSettings)
+        public Game(GameSettings settings)
         {
-            var secretWordGenerator = new SecretWordGenerator(gameSettings);
+            var secretWordGenerator = new SecretWordGenerator(settings);
             _secretWord = secretWordGenerator.GetRandomWord();
 
-            _remainingAttempts = gameSettings.TotalAttempts;
+            _remainingAttempts = settings.TotalAttempts;
         }
 
         public void Start()

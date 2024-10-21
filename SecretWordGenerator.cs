@@ -2,22 +2,21 @@ namespace Hangman
 {
     public class SecretWordGenerator
     {
-        private const string SourceFile = "words.txt";
+        private readonly List<string> _dictionary;
 
-        private readonly List<string> _words;
-
-        public SecretWordGenerator(GameSettings gameSettings)
+        public SecretWordGenerator(GameSettings settings)
         {
-            var allWords = File.ReadAllLines(SourceFile);
-            _words = allWords.Where(w =>
-                w.Length >= gameSettings.MinWordLength &&
-                w.Length <= gameSettings.MaxWordLength).ToList();
+            var dictionary = File.ReadAllLines(settings.Dictionary);
+
+            _dictionary = dictionary.Where(w =>
+                w.Length >= settings.MinWordLength &&
+                w.Length <= settings.MaxWordLength).ToList();
         }
 
         public SecretWord GetRandomWord()
         {
             var random = new Random();
-            var word = _words[random.Next(_words.Count)];
+            var word = _dictionary[random.Next(_dictionary.Count)];
 
             return new SecretWord(word);
         }
