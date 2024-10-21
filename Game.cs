@@ -1,3 +1,5 @@
+using Spectre.Console;
+
 namespace Hangman
 {
     public class Game
@@ -20,12 +22,16 @@ namespace Hangman
             while (!_secretWord.IsGuessed() && _remainingAttempts > 0)
             {
                 Logger.LogRoundInfo(_secretWord, _remainingAttempts, _usedLetters);
-                char letter;
+                bool processed;
                 do
-                    letter = Player.GuessLetter();
-                while (!ProcessGuess(letter));
+                {
+                    var letter = Player.GuessLetter();
+                    processed = ProcessGuess(letter);
+                }
+                while (!processed);
             }
 
+            Logger.LogRoundInfo(_secretWord, _remainingAttempts, _usedLetters, revealWord: true);
             Logger.LogGameResult(_secretWord);
         }
 
@@ -33,7 +39,8 @@ namespace Hangman
         {
             if (_usedLetters.Contains(letter))
             {
-                Console.WriteLine($"Letter '{letter}' has already been used. Try another letter.");
+                AnsiConsole.MarkupLineInterpolated(
+                    $"[red]The letter '{letter}' has already been used. Try another one.[/]");
                 return false;
             }
 

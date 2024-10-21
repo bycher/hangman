@@ -1,54 +1,37 @@
+using Spectre.Console;
+
 namespace Hangman
 {
     public static class Player
     {
-        private static bool ValidateInput(string input)
+        private static ValidationResult ValidateInput(string input)
         {
             if (input.Length != 1)
-            {
-                Console.WriteLine("You need to enter one letter");
-                return false;
-            }
+                return ValidationResult.Error("[red]You need to enter one letter[/]");
 
-            var symbol = input[0];
-            if (!char.IsLetter(symbol))
-            {
-                Console.WriteLine("You need to enter the letter");
-                return false;
-            }
-            if (!char.IsLower(symbol))
-            {
-                Console.WriteLine("Only lowercase letters are allowed");
-                return false;
-            }
-            return true;
+            var letter = input[0];
+            if (!char.IsLetter(letter))
+                return ValidationResult.Error("[red]You need to enter the letter[/]");
+            if (!char.IsLower(letter))
+                return ValidationResult.Error("[red]Only lowercase letters are allowed[/]");
+
+            return ValidationResult.Success();
         }
 
         public static char GuessLetter()
         {
-            string input;
-            do
-            {
-                Console.Write("Enter the letter: ");
-                input = Console.ReadLine()!;
-            }
-            while (!ValidateInput(input));
+            var input = AnsiConsole.Prompt(
+                new TextPrompt<string>("[yellow]Enter the letter[/]: ")
+                    .Validate(ValidateInput));
 
             return input[0];
         }
 
-        public static StartOption ChooseStartOption()
-        {
-            Console.Write("Do you want to start a new game? [y/n]: ");
-            var key = Console.ReadKey();
-            Console.WriteLine();
-
-            return key.KeyChar switch
-            {
-                'y' => StartOption.NewGame,
-                'n' => StartOption.Exit,
-                _ => StartOption.Unknown
-            };
-        }
+        public static bool ConfirmNewGame() =>
+            AnsiConsole.Prompt(
+                new TextPrompt<bool>("Do you want to start a new game?")
+                    .AddChoices([true, false])
+                    .DefaultValue(true)
+                    .WithConverter(choice => choice ? "y" : "n")); 
     }
 }

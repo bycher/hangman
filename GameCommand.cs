@@ -6,22 +6,11 @@ namespace Hangman
     {
         public override int Execute(CommandContext context, GameSettings settings)
         {
-            while (true)
+            while (Player.ConfirmNewGame())
             {
-                var option = Player.ChooseStartOption();
-
-                if (option == StartOption.NewGame)
-                {
-                    var game = new Game(settings);
-                    game.Start();
-                }
-                else if (option == StartOption.Exit)
-                    break;
-                else
-                    Console.WriteLine("Invalid key was pressed. Please try again.");
+                var game = new Game(settings);
+                game.Start();
             }
-            
-            Console.WriteLine("Goodbye!");
             return 0;
         }
     }
