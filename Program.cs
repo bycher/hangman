@@ -8,16 +8,19 @@
             {
                 var option = Player.ChooseStartOption();
 
-                if (option == 'y')
+                if (option == StartOption.NewGame)
                 {
-                    var game = new Game(6);
+                    var settings = new GameSettings();
+                    var game = new Game(settings);
                     game.Start();
                 }
-                else if (option == 'n')
+                else if (option == StartOption.Exit)
                     break;
                 else
                     Console.WriteLine("Invalid key was pressed. Please try again.");
             }
+            
+            Console.WriteLine("Goodbye!");
         }
     }
 }

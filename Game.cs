@@ -2,22 +2,21 @@ namespace Hangman
 {
     public class Game
     {
-        private readonly int _maxErrorsCount;
-        private int _errorsCount;
+        private int _remainingAttempts;
         private readonly List<char> _usedLetters = [];
         private readonly SecretWord _secretWord;
 
-        public Game(int maxErrorsCount)
+        public Game(GameSettings gameSettings)
         {
-            _maxErrorsCount = maxErrorsCount;
-
-            var secretWordGenerator = new SecretWordGenerator();
+            var secretWordGenerator = new SecretWordGenerator(gameSettings);
             _secretWord = secretWordGenerator.GetRandomWord();
+
+            _remainingAttempts = gameSettings.TotalAttempts;
         }
 
         public void Start()
         {
-            while (!_secretWord.IsGuessed() && _errorsCount < _maxErrorsCount)
+            while (!_secretWord.IsGuessed() && _remainingAttempts > 0)
             {
                 PrintRoundInfo();
                 char letter;
@@ -38,9 +37,9 @@ namespace Hangman
             }
 
             if (_secretWord.Contains(letter))
-                _secretWord.Reveal(letter);
+                _secretWord.RevealLetter(letter);
             else
-                _errorsCount++;
+                _remainingAttempts--;
 
             _usedLetters.Add(letter);
             return true;
@@ -49,7 +48,7 @@ namespace Hangman
         private void PrintRoundInfo()
         {
             Console.WriteLine("Word: " + _secretWord.Mask);
-            Console.WriteLine($"Errors count: {_errorsCount}/{_maxErrorsCount}");
+            Console.WriteLine($"Attempts left: {_remainingAttempts}");
         }
 
         private void PrintFinalMessage()

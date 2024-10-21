@@ -37,13 +37,25 @@ namespace Hangman
             return input[0];
         }
 
-        public static char ChooseStartOption()
+        public static StartOption ChooseStartOption()
         {
-            Console.WriteLine("Do you want to start a new game? [y/n]: ");
+            Console.Write("Do you want to start a new game? [y/n]: ");
             var key = Console.ReadKey();
             Console.WriteLine();
 
-            return key.KeyChar;
+            return key.KeyChar switch
+            {
+                'y' => StartOption.NewGame,
+                'n' => StartOption.Exit,
+                _ => StartOption.Unknown
+            };
         }
+    }
+
+    public enum StartOption
+    {
+        NewGame,
+        Exit,
+        Unknown
     }
 }
