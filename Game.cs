@@ -7,21 +7,24 @@ namespace Hangman
         private int _remainingAttempts;
         private readonly HashSet<char> _usedLetters;
         private readonly SecretWord _secretWord;
+        private readonly HangmanImage _hangmanImage;
 
         public Game(GameSettings settings)
         {
             _usedLetters = [];
-            _remainingAttempts = settings.TotalAttempts;
+            _remainingAttempts = GameSettings.TotalAttempts;
 
             var secretWordGenerator = new SecretWordGenerator(settings);
             _secretWord = secretWordGenerator.GetRandomWord();
+
+            _hangmanImage = new HangmanImage();
         }
 
         public void Start()
         {
             while (!_secretWord.IsGuessed() && _remainingAttempts > 0)
             {
-                Logger.LogRoundInfo(_secretWord, _remainingAttempts, _usedLetters);
+                Logger.LogRoundInfo(_secretWord, _remainingAttempts, _usedLetters, _hangmanImage);
                 bool processed;
                 do
                 {
@@ -31,7 +34,7 @@ namespace Hangman
                 while (!processed);
             }
 
-            Logger.LogRoundInfo(_secretWord, _remainingAttempts, _usedLetters, revealWord: true);
+            Logger.LogRoundInfo(_secretWord, _remainingAttempts, _usedLetters, _hangmanImage, true);
             Logger.LogGameResult(_secretWord);
         }
 

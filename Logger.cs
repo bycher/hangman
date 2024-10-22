@@ -4,6 +4,36 @@ namespace Hangman
 {
     public static class Logger
     {
+        public static void LogRoundInfo(
+            SecretWord secretWord,
+            int remainingAttempts,
+            HashSet<char> usedLetters,
+            HangmanImage image,
+            bool revealWord = false)
+        {
+            AnsiConsole.Clear();
+            AnsiConsole.Write(new Rule("[yellow]Hangman[/]"));
+
+            PrintHangman(image, remainingAttempts);
+            PrintWordPanel(secretWord, revealWord);
+            PrintStatistics(remainingAttempts, usedLetters);
+        }
+
+        public static void LogGameResult(SecretWord secretWord)
+        {
+            var text = secretWord.IsGuessed()
+                ? "Congratulations! You guessed the word!\n"
+                : $"Sorry but you lost! The secret word was '{secretWord.Word}'.\n";
+
+            AnsiConsole.WriteLine(text);
+        }
+
+        private static void PrintHangman(HangmanImage image, int remainingAttempts)
+        {
+            image.Update(remainingAttempts);
+            AnsiConsole.Write(Align.Center(new Text(image.Image)));
+        }
+
         private static void PrintWordPanel(SecretWord secretWord, bool revealWord = false)
         {
             var word = revealWord ? secretWord.Word : secretWord.Mask;
@@ -18,29 +48,10 @@ namespace Hangman
         private static void PrintStatistics(int remainingAttempts, HashSet<char> usedLetters)
         {
             AnsiConsole.MarkupLineInterpolated(
-                $"[yellow]Attempts left[/]: {remainingAttempts}");
+                $"[green]Attempts left[/]: {remainingAttempts}");
             AnsiConsole.MarkupLineInterpolated(
-                $"[yellow]Used letters[/]: [[ {string.Join(", ", usedLetters)} ]]");
+                $"[green]Used letters[/] : [[ {string.Join(", ", usedLetters)} ]]");
             AnsiConsole.WriteLine();
-        }
-
-        public static void LogRoundInfo(
-            SecretWord secretWord, int remainingAttempts, HashSet<char> usedLetters, bool revealWord = false)
-        {
-            AnsiConsole.Clear();
-            AnsiConsole.Write(new Rule("[yellow]Hangman[/]"));
-
-            PrintWordPanel(secretWord, revealWord);
-            PrintStatistics(remainingAttempts, usedLetters);
-        }
-
-        public static void LogGameResult(SecretWord secretWord)
-        {
-            var text = secretWord.IsGuessed()
-                ? "Congratulations! You guessed the word!\n"
-                : $"Sorry but you lost! The secret word was '{secretWord.Word}'.\n";
-
-            AnsiConsole.WriteLine(text);
         }
     }
 }

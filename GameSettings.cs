@@ -6,11 +6,8 @@ namespace Hangman
 {
     public class GameSettings : CommandSettings
     {
-        [CommandOption("-t|--total <TOTAL_ATTEMPTS>")]
-        [Description("The total number of attempts to guess the word")]
-        [DefaultValue(6)]
-        public int TotalAttempts { get; init; }
-
+        public const int TotalAttempts = 6;
+        
         [CommandOption("--min <MIN_WORD_LENGTH>")]
         [Description("The minimum length of the secret word")]
         [DefaultValue(5)]
@@ -28,9 +25,6 @@ namespace Hangman
 
         public override ValidationResult Validate()
         {
-            if (TotalAttempts <= 0)
-                return ValidationResult.Error("The total number of attempts must be positive");
-            
             if (MinWordLength <= 0 || MaxWordLength <= 0)
                 return ValidationResult.Error("The word length must be positive");
 
