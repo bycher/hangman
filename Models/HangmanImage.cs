@@ -1,11 +1,20 @@
 namespace Hangman.Models
 {
+    /// <summary>
+    /// Graphical representation of the hangman in the form of ASCII characters
+    /// </summary>
     public class HangmanImage
     {
         private readonly List<string> _image;
 
+        /// <summary>
+        /// The string displayed on the console
+        /// </summary>
         public string Image => string.Join("\n", _image);
 
+        /// <summary>
+        /// Set the initial state of the hangman
+        /// </summary>
         public HangmanImage()
         {
             _image = [
@@ -50,6 +59,10 @@ namespace Hangman.Models
             _image[5] = " |      / \\ ";
         }
 
+        /// <summary>
+        /// Redrawing the hangman according to the number of remaining attempts
+        /// </summary>
+        /// <param name="remainingAttempts">The number of remaining attempts</param>
         public void Update(int remainingAttempts)
         {
             switch (remainingAttempts)

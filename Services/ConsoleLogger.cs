@@ -1,19 +1,34 @@
 #pragma warning disable IDE0290
 
+using Hangman.Interfaces;
 using Hangman.Models;
 using Spectre.Console;
 
 namespace Hangman.Services
 {
-    public class Logger
+    /// <summary>
+    /// A console logging service
+    /// </summary>
+    public class ConsoleLogger : ILogger
     {
         private readonly Game _game;
 
-        public Logger(Game game)
+        /// <summary>
+        /// Сreating a logger based on a Game's object
+        /// </summary>
+        /// <param name="game">Game object</param>
+        public ConsoleLogger(Game game)
         {
             _game = game;
         }
 
+        /// <summary>
+        /// Logging information about the round to the console. It logs:
+        ///   - the image of the hangman
+        ///   - the guessed letters
+        ///   - statistics
+        /// </summary>
+        /// <param name="revealWord">Is it required to reveal the word</param>
         public void LogRoundInfo(bool revealWord = false)
         {
             AnsiConsole.Clear();
@@ -24,6 +39,9 @@ namespace Hangman.Services
             PrintStatistics();
         }
 
+        /// <summary>
+        /// Logging the final message to the console
+        /// </summary>
         public void LogGameResult()
         {
             var text = _game.SecretWord.IsGuessed()

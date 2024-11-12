@@ -2,8 +2,16 @@ using Spectre.Console;
 
 namespace Hangman.Models
 {
+    /// <summary>
+    /// A class representing the player's actions
+    /// </summary>
     public static class Player
     {
+        /// <summary>
+        /// Validation of player's input
+        /// </summary>
+        /// <param name="input">Сonsole input</param>
+        /// <returns>ValidationResult object representing error / success</returns>
         private static ValidationResult ValidateInput(string input)
         {
             if (input.Length != 1)
@@ -19,6 +27,10 @@ namespace Hangman.Models
             return ValidationResult.Success();
         }
 
+        /// <summary>
+        /// Propmpt for the next letter from the user
+        /// </summary>
+        /// <returns>The entered letter</returns>
         public static char GuessLetter()
         {
             var input = AnsiConsole.Prompt(
@@ -28,6 +40,10 @@ namespace Hangman.Models
             return input[0];
         }
 
+        /// <summary>
+        /// Prompt confirming the start of a new game
+        /// </summary>
+        /// <returns>true if the user press 'y', false if 'n' was pressed</returns>
         public static bool ConfirmNewGame() => AnsiConsole.Prompt(
             new TextPrompt<bool>("Do you want to start a new game?")
                 .AddChoices([true, false])

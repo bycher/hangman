@@ -3,20 +3,42 @@ using Spectre.Console;
 
 namespace Hangman.Models
 {
+    /// <summary>
+    /// Сlass representing the process of playing the Hangman
+    /// </summary>
     public class Game
     {
-        private readonly Logger _logger;
+        private readonly ConsoleLogger _logger;
 
         private int _remainingAttempts;
         private readonly HashSet<char> _usedLetters;
         private readonly SecretWord _secretWord;
         private readonly HangmanImage _hangmanImage;
 
+        /// <summary>
+        /// The number of remaining attempts to guess the secret word
+        /// </summary>
         public int RemainingAttempts => _remainingAttempts;
+
+        /// <summary>
+        /// The word that needs to be guessed
+        /// </summary>
         public SecretWord SecretWord => _secretWord;
+
+        /// <summary>
+        /// The image of the hangman to display in the console
+        /// </summary>
         public HangmanImage HangmanImage => _hangmanImage;
+
+        /// <summary>
+        /// The set of letters used by the player
+        /// </summary>
         public HashSet<char> UsedLetters => _usedLetters;
 
+        /// <summary>
+        /// Initializing a new game based on settings
+        /// </summary>
+        /// <param name="settings">Game settings</param>
         public Game(GameSettings settings)
         {
             _usedLetters = [];
@@ -27,9 +49,12 @@ namespace Hangman.Models
 
             _hangmanImage = new HangmanImage();
 
-            _logger = new Logger(this);
+            _logger = new ConsoleLogger(this);
         }
 
+        /// <summary>
+        /// Launching a new round of the game
+        /// </summary>
         public void Start()
         {
             while (!_secretWord.IsGuessed() && _remainingAttempts > 0)
@@ -49,6 +74,11 @@ namespace Hangman.Models
             _logger.LogGameResult();
         }
 
+        /// <summary>
+        /// Сhecking the player's guess
+        /// </summary>
+        /// <param name="letter">The letter used by the player</param>
+        /// <returns>true if the letter has not been used before, false otherwise</returns>
         private bool ProcessGuess(char letter)
         {
             if (_usedLetters.Contains(letter))
