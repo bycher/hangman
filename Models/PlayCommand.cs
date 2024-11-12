@@ -1,8 +1,8 @@
 using Spectre.Console.Cli;
 
-namespace Hangman
+namespace Hangman.Models
 {
-    public class GameCommand : Command<GameSettings>
+    public class PlayCommand : Command<GameSettings>
     {
         public override int Execute(CommandContext context, GameSettings settings)
         {

@@ -1,4 +1,5 @@
-﻿using Spectre.Console.Cli;
+﻿using Hangman.Models;
+using Spectre.Console.Cli;
 
 namespace Hangman
 {
@@ -6,7 +7,7 @@ namespace Hangman
     {
         private static int Main(string[] args)
         {
-            var app = new CommandApp<GameCommand>();
+            var app = new CommandApp<PlayCommand>();
             return app.Run(args);
         }
     }

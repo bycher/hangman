@@ -1,13 +1,21 @@
+using Hangman.Services;
 using Spectre.Console;
 
-namespace Hangman
+namespace Hangman.Models
 {
     public class Game
     {
+        private readonly Logger _logger;
+
         private int _remainingAttempts;
         private readonly HashSet<char> _usedLetters;
         private readonly SecretWord _secretWord;
         private readonly HangmanImage _hangmanImage;
+
+        public int RemainingAttempts => _remainingAttempts;
+        public SecretWord SecretWord => _secretWord;
+        public HangmanImage HangmanImage => _hangmanImage;
+        public HashSet<char> UsedLetters => _usedLetters;
 
         public Game(GameSettings settings)
         {
@@ -15,27 +23,30 @@ namespace Hangman
             _remainingAttempts = GameSettings.TotalAttempts;
 
             var secretWordGenerator = new SecretWordGenerator(settings);
-            _secretWord = secretWordGenerator.GetRandomWord();
+            _secretWord = secretWordGenerator.Generate();
 
             _hangmanImage = new HangmanImage();
+
+            _logger = new Logger(this);
         }
 
         public void Start()
         {
             while (!_secretWord.IsGuessed() && _remainingAttempts > 0)
             {
-                Logger.LogRoundInfo(_secretWord, _remainingAttempts, _usedLetters, _hangmanImage);
-                bool processed;
+                _logger.LogRoundInfo();
+
+                bool guessProcessed;
                 do
                 {
                     var letter = Player.GuessLetter();
-                    processed = ProcessGuess(letter);
+                    guessProcessed = ProcessGuess(letter);
                 }
-                while (!processed);
+                while (!guessProcessed);
             }
 
-            Logger.LogRoundInfo(_secretWord, _remainingAttempts, _usedLetters, _hangmanImage, true);
-            Logger.LogGameResult(_secretWord);
+            _logger.LogRoundInfo(true);
+            _logger.LogGameResult();
         }
 
         private bool ProcessGuess(char letter)

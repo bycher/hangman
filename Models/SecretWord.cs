@@ -1,6 +1,6 @@
 #pragma warning disable IDE0290
 
-namespace Hangman
+namespace Hangman.Models
 {
     public class SecretWord
     {

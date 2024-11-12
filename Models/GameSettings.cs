@@ -2,12 +2,12 @@ using System.ComponentModel;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
-namespace Hangman
+namespace Hangman.Models
 {
     public class GameSettings : CommandSettings
     {
         public const int TotalAttempts = 6;
-        
+
         [CommandOption("--min <MIN_WORD_LENGTH>")]
         [Description("The minimum length of the secret word")]
         [DefaultValue(5)]
@@ -20,8 +20,7 @@ namespace Hangman
 
         [CommandOption("-f|--file <PATH_TO_DICTIONARY>")]
         [Description("The path to the dictionary file (.txt) for generating the secret word")]
-        [DefaultValue("dictionary.txt")]
-        public required string Dictionary { get; init; }
+        public required string DictionaryPath { get; init; } = Path.Combine("Data", "dictionary.txt");
 
         public override ValidationResult Validate()
         {
@@ -30,12 +29,10 @@ namespace Hangman
 
             if (MinWordLength > MaxWordLength)
                 return ValidationResult.Error("The minimum word length can't exceed the maximum length");
-            
-            if (!File.Exists(Dictionary))
-            {
-                var path = Path.Combine(Environment.CurrentDirectory, Dictionary);
-                return ValidationResult.Error($"File '{path}' doesn't exists");
-            }
+
+            var fullDictionaryPath = Path.Combine(Environment.CurrentDirectory, DictionaryPath);
+            if (!File.Exists(fullDictionaryPath))
+                return ValidationResult.Error($"File '{fullDictionaryPath}' doesn't exists");
 
             return ValidationResult.Success();
         }

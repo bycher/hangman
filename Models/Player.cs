@@ -1,6 +1,6 @@
 using Spectre.Console;
 
-namespace Hangman
+namespace Hangman.Models
 {
     public static class Player
     {
@@ -10,6 +10,7 @@ namespace Hangman
                 return ValidationResult.Error("[red]You need to enter one letter[/]");
 
             var letter = input[0];
+
             if (!char.IsLetter(letter))
                 return ValidationResult.Error("[red]You need to enter the letter[/]");
             if (!char.IsLower(letter))
@@ -27,11 +28,10 @@ namespace Hangman
             return input[0];
         }
 
-        public static bool ConfirmNewGame() =>
-            AnsiConsole.Prompt(
-                new TextPrompt<bool>("Do you want to start a new game?")
-                    .AddChoices([true, false])
-                    .DefaultValue(true)
-                    .WithConverter(choice => choice ? "y" : "n")); 
+        public static bool ConfirmNewGame() => AnsiConsole.Prompt(
+            new TextPrompt<bool>("Do you want to start a new game?")
+                .AddChoices([true, false])
+                .DefaultValue(true)
+                .WithConverter(choice => choice ? "y" : "n"));
     }
 }
